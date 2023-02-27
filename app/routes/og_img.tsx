@@ -6,7 +6,7 @@ interface Props {
   from?: string;
   to?: string;
 }
-export const OgImage = ({
+const OgImage = ({
   msg,
   from = 'rgba(25,152,97,1)',
   to = 'rgba(0,93,255,1)',
@@ -34,7 +34,7 @@ export const OgImage = ({
   );
 };
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request, context }: LoaderArgs) {
   const url = new URL(request.url);
   const msg = url.searchParams.get("msg") || 'hello';
   const img = await generateImage(<OgImage msg={msg} />);

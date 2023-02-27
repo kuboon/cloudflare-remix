@@ -1,16 +1,14 @@
 // @ts-ignore
 import satori, { init } from 'satori/wasm';
-// @ts-ignore
 import initYoga from 'yoga-wasm-web/asm';
 import { Resvg, initWasm } from '@resvg/resvg-wasm';
 import type { ReactNode } from 'react';
 import { loadGoogleFont } from './fonts';
-import resvgWasm from '../node_modules/@resvg/resvg-wasm/index_bg.wasm'
 
-const genModuleInit = async () => {
-  init(await initYoga());
-  await initWasm(resvgWasm);
-};
+const genModuleInit = async () => Promise.all([
+  init(initYoga()),
+  fetch('https://unpkg.com/@resvg/resvg-wasm/index_bg.wasm').then(x=>x.arrayBuffer()).then(initWasm)
+])
 const moduleInit = genModuleInit();
 
 export const generateImage = async (node: ReactNode) => {
