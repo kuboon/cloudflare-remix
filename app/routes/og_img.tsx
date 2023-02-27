@@ -34,10 +34,13 @@ const OgImage = ({
   );
 };
 
-export async function loader({ request, context }: LoaderArgs) {
+export async function loader({ request }: LoaderArgs) {
   const url = new URL(request.url);
   const msg = url.searchParams.get("msg") || 'hello';
   const img = await generateImage(<OgImage msg={msg} />);
-  // c.header('Cache-Control', 'max-age=604800');
-  return new Response(img, { headers: { 'Content-Type': 'image/png' } });
+  const headers = {
+    'Content-Type': 'image/png',
+    'Cache-Control': 'max-age=604800',
+  }
+  return new Response(img, { headers });
 }
