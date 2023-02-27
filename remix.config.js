@@ -13,4 +13,8 @@ module.exports = {
   // appDirectory: "app",
   // assetsBuildDirectory: "public/build",
   // publicPath: "/build/",
+  future: {
+    v2_meta: true,
+    v2_routeConvention: true,
+  }
 };

@@ -17,10 +17,10 @@
     "cross-env": "^7.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "remix-utils": "^6.0.0",
     "@resvg/resvg-wasm": "^2.4.1",
     "satori": "^0.4",
     "yoga-wasm-web": "^0.3.2"
-
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^3.18.0",
