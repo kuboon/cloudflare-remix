@@ -1,38 +1,42 @@
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/cloudflare";
-import { json } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
 
-function getItem(id: string){
-  return { id, msg: 'message' }
+type Item = { title: string, content: string }
+function getItem(id: string) {
+  return { id, title: `this is title ${id}`, content: `this is content ${id}` }
 }
+const imgUrl = (item: Item) => `/og_img?title=${item.title}&content=${item.content}`
+
 export async function loader({ params }: LoaderArgs) {
-  return json({
-    item: await getItem(params.id!),
-  });
+  return { item: await getItem(params.id!) };
 }
 
-export const meta: V2_MetaFunction<typeof loader> = ({data}) => {
+export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
+  const { item } = data
   return [
     {
-      title: "New Remix App",
+      title: item.title,
     },
     {
       name: "description",
-      content: "This app is a wildly dynamic web app",
+      content: item.content,
     },
     {
       property: "og:image",
-      content: `/og_img?msg=${data.item.msg}`,
-    }
+      content: imgUrl(item),
+    },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:site', content: '@remix_run' },
+    { name: 'twitter:creator', content: '@remix_run' },
   ];
 };
 
 export default function Page() {
-  const data = useLoaderData<typeof loader>();
+  const { item } = useLoaderData<typeof loader>();
   return (
     <div>
       <h1>Shared Page</h1>
-      <img src={`/og_img?msg=${data.item.msg}`} />
+      <img src={imgUrl(item)} />
     </div>
   );
 }

@@ -1,0 +1,6 @@
+compatibility_date = "2023-03-01"
+
+[[ d1_databases ]]
+binding = "DB" # i.e. available in your Worker on env.DB
+database_name = "myapp"
+database_id = "ca75b528-70df-40ad-8d4b-b73008b486b1"
