@@ -22,7 +22,6 @@ class SqliteBooleanTransformer extends OperationNodeTransformer {
         node.value instanceof Date ? (node.value.toISOString()) :
           node.value
     const ret = { ...super.transformValue(node), value }
-    console.log(ret)
     return ret
   }
 }

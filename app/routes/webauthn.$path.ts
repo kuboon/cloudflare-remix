@@ -39,7 +39,6 @@ export async function action({ request, params, context }: LoaderArgs) {
 	if (!reqBody) return json({ ok: false, message: "no body" })
 
 	const conf = config(context as Record<string, string>).fido
-console.log(conf.origin)
 	const store = {
 		session: await getSession(request.headers.get("Cookie")),
 		db: new database(context.DB as any),
@@ -81,7 +80,9 @@ async function register(reqBody: { username: string }, { db, f2l, session }: Sto
 		});
 	}
 
-	const userInfo = await db.getUser(userName);
+  console.log('get from db')
+	const userInfo = await db.getUser(userName).catch(e => console.log(e));
+	console.log('got from db', userInfo)
 
 	if (userInfo && userInfo.registered) {
 		return json({
@@ -238,7 +239,6 @@ async function response(reqBody: any, { db, f2l, session }: Store) {
 				created_at: new Date().toISOString(),
 			})
 		} catch (e) {
-			console.log(e);
 			return json({
 				"status": "failed",
 				"message": "Invalid response!"
