@@ -1,5 +1,4 @@
 /** @type {import('@remix-run/dev').AppConfig} */
-import { port as devServerPort } from './app/config.mjs';
 export default {
   devServerBroadcastDelay: 1000,
   ignoredRouteFiles: ["**/.*"],
@@ -11,7 +10,6 @@ export default {
   serverMinify: true,
   serverModuleFormat: "esm",
   serverPlatform: "neutral",
-  devServerPort,
   // appDirectory: "app",
   // assetsBuildDirectory: "public/build",
   // publicPath: "/build/",

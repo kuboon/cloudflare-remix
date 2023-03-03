@@ -1,14 +1,15 @@
-const port = 8002
-const domain = 'localhost'
-const isSecure = port === 443
-const origin = `http${isSecure ? 's' : ''}://${domain}:${port}`
-const fido = {
-  rpId: domain,
-  rpName: 'remix-fido2-example',
-  origin
-}
-export {
-  origin,
-  port,
-  fido
+export function config(env = process.env){
+  const port = env.PORT || 8787
+  const domain = env.ORIGIN || 'localhost'
+  const isSecure = port === 443
+  const origin = `http${isSecure ? 's' : ''}://${domain}:${port}`
+  return {
+    origin,
+    port,
+    fido: {
+      rpId: domain,
+      rpName: 'remix-fido2-example',
+      origin
+    }
+  }
 }

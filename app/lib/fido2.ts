@@ -11,15 +11,14 @@ interface IAssertionExpectations {
 	userHandle: string;
 }
 class Fido2 {
-
 	f2l: Fido2Lib;
+	origin: string;
 
-	constructor(rpId : string, rpName : string, rpIcon : string | undefined, timeout: number) {
+	constructor(rpId : string, rpName : string, origin: string, timeout: number) {
 		this.f2l = new Fido2Lib({
 			timeout,
 			rpId,
 			rpName,
-			rpIcon,
 			challengeSize: 128,
 			attestation: "direct",
 			cryptoParams: [-7, -257],
@@ -27,6 +26,7 @@ class Fido2 {
 			authenticatorRequireResidentKey: false,
 			authenticatorUserVerification: "preferred"
 		});
+		this.origin = origin
 	}
 
 	async registration(name : string, displayName : string, id : string) {
@@ -46,10 +46,10 @@ class Fido2 {
 		return registrationOptions as {rp: any, user: any, challenge: string, status: string};
 	}
 
-	attestation(clientAttestationResponse: AttestationResult, origin : string, challenge : string) {
+	attestation(clientAttestationResponse: AttestationResult, challenge : string) {
 		const attestationExpectations = {
 			challenge,
-			origin,
+			origin: this.origin,
 			factor: "either" as const
 		};
 		return this.f2l.attestationResult(clientAttestationResponse, attestationExpectations);
@@ -63,7 +63,7 @@ class Fido2 {
 	}
 
 	assertion(assertionResult: AssertionResult, expectedAssertionResult: IAssertionExpectations) {
-		return this.f2l.assertionResult(assertionResult, expectedAssertionResult);
+		return this.f2l.assertionResult(assertionResult, {...expectedAssertionResult, origin: this.origin});
 	}
 }
 

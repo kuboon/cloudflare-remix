@@ -4,15 +4,15 @@ import base64 from "@hexagon/base64";
 import { Fido2, IAssertionExpectations } from "../lib/fido2";
 import { json, LoaderArgs, Session } from "@remix-run/cloudflare";
 import { commitSession, getSession } from "~/sessions";
-import { fido as config } from "~/config.mjs";
+import { config } from "~/config.mjs";
 
 interface Store {
 	session: Session
 	db: database
+	f2l: Fido2
 }
 
 const userNameMaxLenght = 25;
-const f2l = new Fido2(config.rpId, config.rpName, undefined, 90000);
 
 function validateUsername(username: string): string | undefined {
 	try {
@@ -38,9 +38,12 @@ export async function action({ request, params, context }: LoaderArgs) {
 	const reqBody = await request.json();
 	if (!reqBody) return json({ ok: false, message: "no body" })
 
+	const conf = config(context as Record<string, string>).fido
+console.log(conf.origin)
 	const store = {
 		session: await getSession(request.headers.get("Cookie")),
-		db: new database(context.DB as any)
+		db: new database(context.DB as any),
+		f2l: new Fido2(conf.rpId, conf.rpName, conf.origin, 90000)
 	}
 	switch (params.path) {
 		case "register":
@@ -54,7 +57,7 @@ export async function action({ request, params, context }: LoaderArgs) {
 	}
 }
 
-async function register(reqBody: { username: string }, { db, session }: Store) {
+async function register(reqBody: { username: string }, { db, f2l, session }: Store) {
 	if (!reqBody.username) {
 		return json({
 			"status": "failed",
@@ -109,7 +112,7 @@ async function register(reqBody: { username: string }, { db, session }: Store) {
 	});
 }
 
-async function add(_reqBody: any, { db, session }: Store) {
+async function add(_reqBody: any, { db, f2l, session }: Store) {
 	if (!session.get("loggedIn")) {
 		return json({
 			"status": "failed",
@@ -151,7 +154,7 @@ async function add(_reqBody: any, { db, session }: Store) {
 	});
 }
 
-async function login(reqBody: any, { db, session }: Store) {
+async function login(reqBody: any, { db, f2l, session }: Store) {
 	if (!reqBody.username) {
 		return json({
 			"status": "failed",
@@ -198,7 +201,7 @@ async function login(reqBody: any, { db, session }: Store) {
 	});
 }
 
-async function response(reqBody: any, { db, session }: Store) {
+async function response(reqBody: any, { db, f2l, session }: Store) {
 	if (!reqBody.id
 		|| !reqBody.rawId || !reqBody.response
 		|| !reqBody.type || reqBody.type !== "public-key") {
@@ -224,7 +227,7 @@ async function response(reqBody: any, { db, session }: Store) {
 		webauthnResp.rawId = base64.toArrayBuffer(webauthnResp.rawId, true);
 		webauthnResp.response.attestationObject = base64.toArrayBuffer(webauthnResp.response.attestationObject, true);
 		try {
-			const result = await f2l.attestation(webauthnResp, config.origin, await session.get("challenge"));
+			const result = await f2l.attestation(webauthnResp, await session.get("challenge"));
 			await db.createCred({
 				credId: base64.fromArrayBuffer(result.authnrData!.get("credId"), true),
 				userId: userInfo.id,
@@ -264,16 +267,16 @@ async function response(reqBody: any, { db, session }: Store) {
 		const creds = await db.getCredsForUser(userInfo.id)
 		for (const cred of creds) {
 			try {
-				const assertionExpectations: IAssertionExpectations = {
+				const expectedAssertionResult: IAssertionExpectations = {
 					allowCredentials,
 					challenge,
-					origin: config.origin,
+					origin: '',
 					factor: "either",
 					publicKey: cred.publicKey,
 					prevCounter: cred.counter,
 					userHandle: cred.credId
 				};
-				const result = await f2l.assertion(webauthnResp, assertionExpectations);
+				const result = await f2l.assertion(webauthnResp, expectedAssertionResult);
 
 				winningAuthenticator = result;
 
