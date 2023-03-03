@@ -12,6 +12,7 @@ export const generateImage = async (node: ReactElement) => {
   return new ImageResponse(node as any, {
     width: 1200,
     height: 630,
+    debug: true,
     fonts: [
       {
         name: 'NotoSansJP',
