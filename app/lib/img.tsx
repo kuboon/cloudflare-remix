@@ -5,14 +5,18 @@ import { Resvg, initWasm as initResvg } from '@resvg/resvg-wasm';
 import type { ReactNode } from 'react';
 import { loadGoogleFont } from './fonts';
 
-const genModuleInit = async () => Promise.all([
-  fetch('https://unpkg.com/yoga-wasm-web/dist/yoga.wasm').then(x=>x.arrayBuffer()).then(initYoga).then(initSatori),
-  fetch('https://unpkg.com/@resvg/resvg-wasm/index_bg.wasm').then(x=>x.arrayBuffer()).then(initResvg)
-])
+// Promise cannot start before request
+const genModuleInit = () => {
+  let promise: Promise<any> | undefined;
+  return () => promise || (promise = Promise.all([
+    fetch('https://unpkg.com/yoga-wasm-web/dist/yoga.wasm').then(x=>x.arrayBuffer()).then(initYoga).then(initSatori),
+    fetch('https://unpkg.com/@resvg/resvg-wasm/index_bg.wasm').then(x=>x.arrayBuffer()).then(initResvg)
+  ]))
+}
 const moduleInit = genModuleInit();
 
 export const generateImage = async (node: ReactNode) => {
-  await moduleInit;
+  await moduleInit();
   const notoSans = await loadGoogleFont({
     family: 'Noto Sans JP',
     weight: 100,
