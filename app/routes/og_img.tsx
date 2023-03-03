@@ -40,10 +40,5 @@ export async function loader({ request }: LoaderArgs) {
   const url = new URL(request.url);
   const title = url.searchParams.get("title")!;
   const content = url.searchParams.get("content")!;
-  const img = await generateImage(<OgImage title={title} content={content} />);
-  const headers = {
-    'Content-Type': 'image/png',
-    'Cache-Control': 'max-age=604800',
-  }
-  return new Response(img, { headers });
+  return generateImage(<OgImage title={title} content={content} />);
 }

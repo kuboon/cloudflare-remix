@@ -1,28 +1,15 @@
 // @ts-ignore
-import satori, { init as initSatori } from 'satori/wasm';
-import initYoga from 'yoga-wasm-web';
-import { Resvg, initWasm as initResvg } from '@resvg/resvg-wasm';
-import type { ReactNode } from 'react';
+import { ImageResponse } from "workers-og";
+import type { ReactElement } from 'react';
 import { loadGoogleFont } from './fonts';
 
-// Promise cannot start before request
-const genModuleInit = () => {
-  let promise: Promise<any> | undefined;
-  return () => promise || (promise = Promise.all([
-    fetch('https://unpkg.com/yoga-wasm-web/dist/yoga.wasm').then(x=>x.arrayBuffer()).then(initYoga).then(initSatori),
-    fetch('https://unpkg.com/@resvg/resvg-wasm/index_bg.wasm').then(x=>x.arrayBuffer()).then(initResvg)
-  ]))
-}
-const moduleInit = genModuleInit();
-
-export const generateImage = async (node: ReactNode) => {
-  await moduleInit();
+export const generateImage = async (node: ReactElement) => {
   const notoSans = await loadGoogleFont({
     family: 'Noto Sans JP',
     weight: 100,
   });
 
-  const svg = await satori(node, {
+  return new ImageResponse(node as any, {
     width: 1200,
     height: 630,
     fonts: [
@@ -30,14 +17,8 @@ export const generateImage = async (node: ReactNode) => {
         name: 'NotoSansJP',
         data: notoSans,
         weight: 100,
-        style: 'thin',
+        style: 'normal',
       },
     ],
   });
-
-  const resvg = new Resvg(svg);
-  const pngData = resvg.render();
-  const pngBuffer = pngData.asPng();
-
-  return pngBuffer;
 };
