@@ -13,7 +13,8 @@ ORIGIN = "cloudflare-remix-am2.pages.dev"
 PORT = "443"
 
 
-[[ d1_databases ]]
+[[d1_databases]]
 binding = "DB" # i.e. available in your Worker on env.DB
-database_name = "myapp"
-database_id = "ca75b528-70df-40ad-8d4b-b73008b486b1"
+database_name = "myapp1"
+database_id = "b6d2c484-33ac-4a85-951a-ffde20e1e18f"
+preview_database_id = "myapp1"

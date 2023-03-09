@@ -1,18 +1,14 @@
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/cloudflare";
-import { useLoaderData } from "@remix-run/react";
-
 type Item = { title: string, content: string }
 function getItem(id: string) {
   return { id, title: `this is title ${id}`, content: `this is content ${id}` }
 }
 const imgUrl = (item: Item) => `/og_img?title=${item.title}&content=${item.content}`
 
-export async function loader({ params }: LoaderArgs) {
+async function loader({ params }) {
   return { item: await getItem(params.id!) };
 }
 
-export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
-  const { item } = data
+const meta = (item) => {
   return [
     {
       title: item.title,
@@ -31,12 +27,16 @@ export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
   ];
 };
 
-export default function Page() {
-  const { item } = useLoaderData<typeof loader>();
-  return (
+interface Env {
+	KV: KVNamespace;
+}
+
+export const onRequestGet: PagesFunction<Env> = async ({request}) => {
+  const { item } = await loader({ params: { id: request.url.split("/").pop() } })
+  return new Response(`
     <div>
       <h1>Shared Page</h1>
-      <img src={imgUrl(item)} />
+      <img src="${imgUrl(item)}" />
     </div>
-  );
+  `, {headers: {"content-type": "text/html"}});
 }

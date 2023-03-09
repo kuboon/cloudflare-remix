@@ -1,10 +1,10 @@
 
-import { database } from "~/db/mod";
+import { database } from "../../app/db/mod";
 import base64 from "@hexagon/base64";
-import { Fido2, IAssertionExpectations } from "../lib/fido2";
-import { json, LoaderArgs, Session } from "@remix-run/cloudflare";
-import { commitSession, getSession } from "~/sessions";
-import { config } from "~/config.mjs";
+import { Fido2, IAssertionExpectations } from "../../app/lib/fido2";
+import { commitSession, getSession } from "../../app/sessions";
+import { config } from "../../app/config.mjs";
+import type { Session } from "@remix-run/cloudflare";
 
 interface Store {
 	session: Session
@@ -34,17 +34,31 @@ const randomBase64URLBuffer = (len: number) => {
 	return base64.fromArrayBuffer(randomBytes, true);
 };
 
-export async function action({ request, params, context }: LoaderArgs) {
+interface Env {
+	DB: D1Database;
+}
+
+function json(data: any, init?: ResponseInit) {
+  return new Response(JSON.stringify(data), {
+    headers: {
+      "content-type": "application/json;charset=UTF-8",
+    },
+    ...init,
+  });
+}
+
+export const onRequestPost: PagesFunction<Env> = async ({request, params, env}) => {
 	const reqBody = await request.json();
 	if (!reqBody) return json({ ok: false, message: "no body" })
 
-	const conf = config(context as Record<string, string>).fido
+
+	const conf = config(env as unknown as Record<string, string>).fido
 	const store = {
 		session: await getSession(request.headers.get("Cookie")),
-		db: new database(context.DB as any),
+		db: new database(env.DB),
 		f2l: new Fido2(conf.rpId, conf.rpName, conf.origin, 90000)
 	}
-	switch (params.path) {
+	switch (params.action) {
 		case "register":
 			return register(reqBody as any, store);
 		case "add":
@@ -80,9 +94,7 @@ async function register(reqBody: { username: string }, { db, f2l, session }: Sto
 		});
 	}
 
-  console.log('get from db')
-	const userInfo = await db.getUser(userName).catch(e => console.log(e));
-	console.log('got from db', userInfo)
+	const userInfo = await db.getUser(userName).catch(e => console.error(e));
 
 	if (userInfo && userInfo.registered) {
 		return json({

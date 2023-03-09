@@ -1,3 +1,14 @@
+# 概要メモ
+/app 以下が remix の本体。 build すると /functions 以下に [cloudflare pages functions](https://developers.cloudflare.com/pages/platform/functions) が生成される。
+
+# setup
+```
+npm i
+npm run db:create # 指示通りに wrangler.toml に d1_database を追加
+npm run db:setup
+
+```
+
 # Welcome to Remix!
 
 - [Remix Docs](https://remix.run/docs)
