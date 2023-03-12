@@ -1,5 +1,5 @@
 export function config(env = process.env){
-  const port = env.PORT || 8788
+  const port = env.PORT || 8789
   const domain = env.ORIGIN || 'localhost'
   const isSecure = port === 443
   const origin = `http${isSecure ? 's' : ''}://${domain}:${port}`

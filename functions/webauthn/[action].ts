@@ -1,9 +1,9 @@
 
-import { database } from "../../app/db/mod";
+import { database } from "../_lib/db/mod";
 import base64 from "@hexagon/base64";
-import { Fido2, IAssertionExpectations } from "../../app/lib/fido2";
-import { commitSession, getSession } from "../../app/sessions";
-import { config } from "../../app/config.mjs";
+import { Fido2, IAssertionExpectations } from "../_lib/fido2";
+import { commitSession, getSession } from "../_lib/sessions";
+import { config } from "../_lib/config.mjs";
 import type { Session } from "@remix-run/cloudflare";
 
 interface Store {

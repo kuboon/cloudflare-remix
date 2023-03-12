@@ -1,18 +1,5 @@
 compatibility_date = "2023-03-01"
 
-[vars]
-ORIGIN = "localhost"
-PORT = "8787"
-
-[dev]
-port = 8787
-local_protocol = "http"
-
-[env.production.vars]
-ORIGIN = "cloudflare-remix-am2.pages.dev"
-PORT = "443"
-
-
 [[d1_databases]]
 binding = "DB" # i.e. available in your Worker on env.DB
 database_name = "myapp1"
