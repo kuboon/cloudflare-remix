@@ -2,8 +2,9 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
+    "moduleResolution": "node16",
     "lib": ["esnext"],
     "types": ["@cloudflare/workers-types"],
     "jsx": "react"
-  }
+  },
 }

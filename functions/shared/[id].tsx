@@ -1,12 +1,7 @@
-type Item = { title: string, content: string }
-function getItem(id: string) {
-  return { id, title: `this is title ${id}`, content: `this is content ${id}` }
-}
-const imgUrl = (item: Item) => `/og_img?title=${item.title}&content=${item.content}`
+import { database } from "../_lib/db/mod";
 
-async function loader({ params }) {
-  return { item: await getItem(params.id!) };
-}
+type Item = { title: string, content: string }
+const imgUrl = (item: Item) => `/og_img?title=${item.title}&content=${item.content}`
 
 const meta = (item) => {
   return [
@@ -28,15 +23,22 @@ const meta = (item) => {
 };
 
 interface Env {
-	KV: KVNamespace;
+  DB: D1Database;
+  KV: KVNamespace;
 }
 
-export const onRequestGet: PagesFunction<Env> = async ({request}) => {
-  const { item } = await loader({ params: { id: request.url.split("/").pop() } })
+export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
+  const db = new database(env.DB)
+  const id = request.url.split("/").pop()
+  const user = await db.getUser(id)
+  const item = {
+    title: user.userName,
+    content: `content of ${user.userName}`,
+  }
   return new Response(`
     <div>
       <h1>Shared Page</h1>
       <img src="${imgUrl(item)}" />
     </div>
-  `, {headers: {"content-type": "text/html"}});
+  `, { headers: { "content-type": "text/html" } });
 }

@@ -1,4 +1,3 @@
-// @ts-ignore
 import { ImageResponse } from "workers-og";
 import type { ReactElement } from 'react';
 import * as React from 'react';
