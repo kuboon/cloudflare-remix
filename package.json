@@ -1,8 +1,11 @@
 {
   "private": true,
+  "type": "module",
   "sideEffects": false,
   "scripts": {
-    "build": "cd lume; deno task build",
+    "build": "npm-run-all --parallel build:*",
+    "build:lume": "cd lume; deno task build",
+    "build:esbuild": "npx esbuild --minify --sourcemap --target=es2020 --format=esm --outdir=functions functions/_lib/og_img.tsx",
     "dev:lume": "cd lume; deno task lume -w",
     "dev:wrangler": "cross-env NODE_ENV=development npm run wrangler",
     "dev": "npm-run-all build --parallel \"dev:*\"",

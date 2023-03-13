@@ -1,8 +1,9 @@
 import lume from "lume/mod.ts";
 import date from "lume/plugins/date.ts";
+import date_ja from "npm:date-fns/locale/ja/index.js";
 import esbuild from "lume/plugins/esbuild.ts";
 import inline from "lume/plugins/inline.ts";
-import jsx_preact from "lume/plugins/jsx_preact.ts";
+import jsx from "lume/plugins/jsx.ts";
 import lightningcss from "lume/plugins/lightningcss.ts";
 import metas from "lume/plugins/metas.ts";
 import multilanguage from "lume/plugins/multilanguage.ts";
@@ -19,12 +20,14 @@ site.copy('static', '/')
 site.copy('static/_headers', '/')
 site.copy('static/_routes.json', '/')
 
-site.use(date());
+site.use(date({
+  locales: [date_ja]
+}));
 site.use(esbuild({
   extensions: [".ts", ".js", ".tsx", ".jsx"],
 }));
 site.use(inline());
-site.use(jsx_preact({
+site.use(jsx({
   extensions: [".ssr.jsx", ".ssr.tsx"],
 }));
 site.use(lightningcss());

@@ -1,8 +1,8 @@
 
-import { database } from "../_lib/db/mod";
+import { database } from "../_lib/db/mod.js";
 import base64 from "@hexagon/base64";
-import { Fido2, IAssertionExpectations } from "../_lib/fido2";
-import { commitSession, getSession } from "../_lib/sessions";
+import { Fido2, IAssertionExpectations } from "../_lib/fido2.js";
+import { commitSession, getSession } from "../_lib/sessions.js";
 import { config } from "../_lib/config.mjs";
 import type { Session } from "@remix-run/cloudflare";
 

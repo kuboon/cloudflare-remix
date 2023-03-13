@@ -1,5 +1,9 @@
-# 概要メモ
-/app 以下が remix の本体。 build すると /functions 以下に [cloudflare pages functions](https://developers.cloudflare.com/pages/platform/functions) が生成される。
+# Cloudflare Pages Functions + deno lume
+`/functions` 以下が cloudflare pages functions で、 wrangler が直接 js/ts を実行する。
+ts を使うと wasm を読めないので、 `og_img` は esbuild する。
+
+https://lume.land/
+`/lume` 以下で `deno task build` すると `/public` 以下に静的ファイル群が生成される。
 
 # setup
 ```
@@ -9,16 +13,11 @@ npm run db:setup
 
 ```
 
-# Welcome to Remix!
-
-- [Remix Docs](https://remix.run/docs)
-
 ## Development
 
 You will be utilizing Wrangler for local development to emulate the Cloudflare runtime. This is already wired up in your package.json as the `dev` script:
 
 ```sh
-# start the remix dev server and wrangler
 npm run dev
 ```
 

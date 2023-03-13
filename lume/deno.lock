@@ -434,6 +434,7 @@
     "specifiers": {
       "@lumeland/tailwindcss@3.2.5": "@lumeland/tailwindcss@3.2.5_postcss@8.4.21",
       "autoprefixer@10.4.13": "autoprefixer@10.4.13_postcss@8.4.21",
+      "date-fns": "date-fns@2.29.3",
       "date-fns@2.29.3": "date-fns@2.29.3",
       "lightningcss-wasm@1.19.0": "lightningcss-wasm@1.19.0",
       "markdown-it-attrs@4.1.6": "markdown-it-attrs@4.1.6_markdown-it@13.0.1",
