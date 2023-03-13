@@ -3,6 +3,7 @@
   "sideEffects": false,
   "scripts": {
     "build": "",
+    "dev:lume": "cd lume; deno task serve",
     "dev:wrangler": "cross-env NODE_ENV=development npm run wrangler",
     "dev": "npm-run-all build --parallel \"dev:*\"",
     "start": "cross-env NODE_ENV=production npm run wrangler",
