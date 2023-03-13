@@ -139,29 +139,19 @@ export function register(username, additional) {
  * @return {Object}            - JSON encoded publicKeyCredential
  */
 const publicKeyCredentialToJSON = (pubKeyCred) => {
-  /* ----- DO NOT MODIFY THIS CODE ----- */
   if (pubKeyCred instanceof Array) {
-    let arr = [];
-    for (let i of pubKeyCred) {
-      arr.push(publicKeyCredentialToJSON(i));
-    }
-    return arr;
+    return pubKeyCred.map(publicKeyCredentialToJSON)
   }
-
+  if (pubKeyCred instanceof Object) {
+    const obj = {};
+    for (const key in pubKeyCred) {
+      obj[key] = publicKeyCredentialToJSON(pubKeyCred[key]);
+    }
+    return obj;
+  }
   if (pubKeyCred instanceof ArrayBuffer) {
     return base64.fromArrayBuffer(pubKeyCred, true);
   }
-
-  if (pubKeyCred instanceof Object) {
-    let obj = {};
-
-    for (let key in pubKeyCred) {
-      obj[key] = publicKeyCredentialToJSON(pubKeyCred[key]);
-    }
-
-    return obj;
-  }
-
   return pubKeyCred;
 };
 

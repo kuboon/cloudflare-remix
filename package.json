@@ -2,16 +2,16 @@
   "private": true,
   "sideEffects": false,
   "scripts": {
-    "build": "",
+    "build": "cd lume; deno task build",
     "dev:lume": "cd lume; deno task lume -w",
     "dev:wrangler": "cross-env NODE_ENV=development npm run wrangler",
     "dev": "npm-run-all build --parallel \"dev:*\"",
     "start": "cross-env NODE_ENV=production npm run wrangler",
     "typecheck": "tsc",
-    "wrangler": "NO_D1_WARNING=true wrangler pages dev ./public --persist --compatibility-date 2023-03-10 --local",
+    "wrangler": "NO_D1_WARNING=true wrangler pages dev ./public --persist --compatibility-date 2023-03-07 --local",
     "db:create": "NO_D1_WARNING=true wrangler d1 create myapp",
-    "db:setup": "NO_D1_WARNING=true wrangler d1 execute myapp --file ./app/db/setup.sql --local",
-    "db:deploy": "NO_D1_WARNING=true wrangler d1 execute myapp --file ./app/db/setup.sql"
+    "db:setup":  "NO_D1_WARNING=true wrangler d1 execute myapp --file ./functions/_lib/db/setup.sql --local",
+    "db:deploy": "NO_D1_WARNING=true wrangler d1 execute myapp --file ./functions/_lib/db/setup.sql"
   },
   "dependencies": {
     "@hexagon/base64": "^1.1.26",

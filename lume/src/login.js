@@ -1,4 +1,4 @@
-import { register, login } from './js/webauthn.client.js';
+import { register, login } from './_includes/js/webauthn.client.js';
 function onRegister() {
   const username = (document.getElementById('username')).value
   register(username).then(() => location.href = '/my').catch(alert);

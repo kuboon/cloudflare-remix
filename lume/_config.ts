@@ -13,16 +13,20 @@ import tailwindcss from "lume/plugins/tailwindcss.ts";
 const site = lume({
   src: './src',
   dest: '../public',
-  trailing_slash: false
+  prettyUrls: false
 });
 site.copy('static', '/')
 site.copy('static/_headers', '/')
 site.copy('static/_routes.json', '/')
 
 site.use(date());
-site.use(esbuild());
+site.use(esbuild({
+  extensions: [".ts", ".js", ".tsx", ".jsx"],
+}));
 site.use(inline());
-site.use(jsx_preact());
+site.use(jsx_preact({
+  extensions: [".ssr.jsx", ".ssr.tsx"],
+}));
 site.use(lightningcss());
 site.use(metas());
 site.use(multilanguage());
